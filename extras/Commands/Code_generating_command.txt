@@ -1,0 +1,1 @@
+sudo /opt/rti_connext_dds-6.1.1/bin/rtiddsgen -ppDisable -language c++ -platform armv7Linux4gcc7.5.0 -create makefiles -create typefiles -d src driveAssembly.idl
