@@ -1,8 +1,18 @@
 #define WAITTIME 200 // Wait time in ms
 
+#define PERIOD_DRIVE 64000
+#define DUTY_FORWARD_DRIVE 64000
+#define DUTY_BACKWARD_DRIVE 46000
+#define DUTY_STOPPED_DRIVE 25000
+#define PERIOD_STEER 64000
+#define DUTY_LEFT_STEER 64000
+#define DUTY_RIGHT_STEER 46000
+#define DUTY_STRAIGHT_STEER 25000
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
 
 #include "driveAssembly.h"
 #include "driveAssemblySupport.h"
@@ -17,11 +27,38 @@ static int shutdown(
     int status);
 
 static going drive = going_null;
+static going drive_last = going_null;
 static direction steer = direction_null;
+static direction steer_last = direction_null;
 
 void process_Output()
 {
-    // setting pins
+    if (drive != drive_last)
+    {
+        std::fstream fs;
+        fs.open("/dev/pwm/ehrpwm1a/duty_cycle");
+        if(drive == forward)
+            fs << DUTY_FORWARD_DRIVE;
+        else if (drive == backward)
+            fs << DUTY_BACKWARD_DRIVE;
+        else
+            fs << DUTY_STOPPED_DRIVE;
+        fs.close();
+        drive_last = drive;
+    }
+    if (steer != steer_last)
+    {
+        std::fstream fs;
+        fs.open("/dev/pwm/ehrpwm1b/duty_cycle");
+        if (steer == left)
+            fs << DUTY_LEFT_STEER;
+        else if (steer == right)
+            fs << DUTY_RIGHT_STEER;
+        else
+            fs << DUTY_STRAIGHT_STEER;
+        fs.close();
+        steer_last = steer;
+    }
     std::cout << "Drive: " << (drive == forward ? "Forward, " : (drive == backward ? "Backward, " : "Stopped, ")) << "Direction: " << (steer == left ? "Left" : (steer == right ? "Right" : "Straight")) << std::endl;
 }
 
@@ -236,6 +273,29 @@ static int shutdown(
     return status;
 }
 
+static void setup_pwm_pins()
+{
+    std::fstream fs;
+    fs.open("/dev/pwm/ehrpwm1a/period");
+    fs << PERIOD_DRIVE;
+    fs.close();
+    fs.open("/dev/pwm/ehrpwm1a/duty_cycle");
+    fs << DUTY_STOPPED_DRIVE;
+    fs.close();
+    fs.open("/dev/pwm/ehrpwm1a/enable");
+    fs << 1;
+    fs.close();
+    fs.open("/dev/pwm/ehrpwm1b/period");
+    fs << PERIOD_STEER;
+    fs.close();
+    fs.open("/dev/pwm/ehrpwm1b/duty_cycle");
+    fs << DUTY_STRAIGHT_STEER;
+    fs.close();
+    fs.open("/dev/pwm/ehrpwm1b/enable");
+    fs << 1;
+    fs.close();
+}
+
 int main(int argc, char* argv[])
 {
     // Parse arguments and handle control-C
@@ -250,6 +310,8 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
     setup_signal_handlers();
+
+    setup_pwm_pins();
 
     // Sets Connext verbosity to help debugging
     NDDSConfigLogger::get_instance()->set_verbosity(arguments.verbosity);
