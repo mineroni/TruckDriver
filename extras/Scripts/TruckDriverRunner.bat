@@ -1,15 +1,17 @@
 @echo off
 
+set ip=192.168.1.2
+
 REM Copying file to compiling folder
-copy /y C:\Users\gtadj\Documents\Backup\Work\5.2023\Temalab\communicators\Truckdriver\driveAssembly_subscriber.cxx C:\Users\gtadj\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu18.04LTS_79rhkp1fndgsc\LocalState\rootfs\home\ronald\truckDriver\src
+copy /y C:\Users\gtadj\Documents\Backup\Work\5.2023\Temalab\communicators_v0.2\Truckdriver\driveAssembly_subscriber.cxx C:\Users\gtadj\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu18.04LTS_79rhkp1fndgsc\LocalState\rootfs\home\ronald\truckDriver\src
 
 REM Compiling driveAssembly_subscriber.cxx file (with other files)
 ubuntu1804 run "cd ~/truckDriver/src/ && sudo rm -d objs -r && sudo make -f makefile_driveAssembly_armv7Linux4gcc7.5.0"
 
 REM Sending driveAssembly_subscriber file to BeagleBone
-scp C:\Users\gtadj\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu18.04LTS_79rhkp1fndgsc\LocalState\rootfs\home\ronald\truckDriver\src\objs\armv7Linux4gcc7.5.0\driveAssembly_subscriber debian@192.168.7.2:.
+scp C:\Users\gtadj\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu18.04LTS_79rhkp1fndgsc\LocalState\rootfs\home\ronald\truckDriver\src\objs\armv7Linux4gcc7.5.0\driveAssembly_subscriber debian@%ip%:.
 
 REM Starting project on remote device
-ssh debian@192.168.7.2 "./driveAssembly_subscriber
+ssh debian@%ip% "config-pin P9.14 pwm ; config-pin P9.16 pwm ; config-pin P9.22 pwm ; ./driveAssembly_subscriber"
 
 REM pause

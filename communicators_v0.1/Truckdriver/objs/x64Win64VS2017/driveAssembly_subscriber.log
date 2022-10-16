@@ -1,0 +1,2 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(534,5): warning MSB8028: The intermediate directory (.\objs\x64Win64VS2017\) contains files shared from another project (driveAssembly_publisher.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  driveAssembly_subscriber-x64Win64VS2017.vcxproj -> C:\Users\gtadj\Documents\Backup\Work\5.2023\Temalab\communicators\Truckdriver\objs\x64Win64VS2017\driveAssembly_subscriber.exe
