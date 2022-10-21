@@ -1,8 +1,0 @@
-struct DriveAssembly
-{
-    double drive;
-    double steer;
-    int32 lamp_mode;
-    int32 horn_voice;
-};
-
