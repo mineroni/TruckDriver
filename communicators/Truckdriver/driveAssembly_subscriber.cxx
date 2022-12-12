@@ -1,12 +1,12 @@
 #define WAITTIME 200 // Wait time in ms
 
 #define PERIOD_DRIVE 64000
-#define DUTY_FORWARD_MIN 46000
+#define DUTY_FORWARD_MIN 40000 // MIN AT 46000 by default
 #define DUTY_BACKWARD_DRIVE 46000 // ha csak egy db fordulattal mehetünk hátrafelé. Amúgy nem kell TODO
 #define PERIOD_STEER 3000000
 #define DUTY_LEFT_STEER 2600000
-#define DUTY_RIGHT_STEER 1500000
-#define DUTY_STRAIGHT_STEER 2050000
+#define DUTY_RIGHT_STEER 1700000 //MAX AT 1500000
+#define DUTY_STRAIGHT_STEER 2150000
 
 #include <iostream>
 #include <stdio.h>

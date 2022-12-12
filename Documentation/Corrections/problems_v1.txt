@@ -1,0 +1,44 @@
+téma címe átírni	✅
+bevezető - dds irány, nem kamion ✅
+
+kép - cím, sorszám, utalás a szövegben
+képek leírni, hogy mi van rajta
+
+tartalom: 
+bevezetés átírni CPS demonstrátorra ✅
+	bemutatható, látványos feladat
+	felvezetés az egész dokksira - doksi felépítése > tartalomjegyzék helyett ‼️
+	DDS nagy betűvel, konvenciók követése ✅
+
+önálló lab kisbetű ✅
+IC nagybetű ✅
+
+eszközök: 	hivatkozások  ✅
+		pl. rti cég implementációja, dds omg szabvány✅
+		kommunikáció létesítése túl általános -> adatvezérelt, adatmegosztás alapú ✅
+		dds hosszabb megfogalmazás -> subscriber, publisher, tiopic ✅
+		fogalmak bevezetése a későbbi használathoz -> qos, topic ✅
+		beaglebone irodalmi hivatkozás ✅
+		RAM-mal ✅
+		
+	HS-81 szervó, ez a motor javítani. ✅
+	sys5v nincs kiemelve ✅
+	
+	feszültségmérő -> 3A, 7,6V ✅
+
+	duda-> decibelre ✅
+
+	led bar -> fényhíd, terveben-> tervben ✅
+
+feladat megvalósítása -> szétbontás egységekre, külön hello world ✅
+	ismerkedés a dds-el 4. fejezetként ✅
+	ne legyen 2 fejezet egymás alatt ✅
+	
+	ábra elmesélése, hogy mi történik ✅
+	probléma nem utal semmire -> ebben a fejezetben ezeket a problémákat fogom bemutatni.
+	target boundle bevezetése ✅
+	csomagkezelő -> irodalmi hivatkozás ✅
+	csomagkezelő 2x ✅
+	make-t -> make-et ✅
+	crosscompile-al -> crosscompile-lal ✅
+	

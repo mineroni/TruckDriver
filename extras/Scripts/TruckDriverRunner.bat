@@ -1,7 +1,7 @@
 @echo off
 
 set ip=192.168.1.2
-set source=C:\Users\gtadj\Documents\Backup\Work\5.2023\Temalab\communicators_v0.2\Truckdriver\driveAssembly_subscriber.cxx
+set source=C:\Users\gtadj\Documents\Backup\Work\5.2023\Temalab\communicators\Truckdriver\driveAssembly_subscriber.cxx
 set destination=C:\Users\gtadj\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu18.04LTS_79rhkp1fndgsc\LocalState\rootfs\home\ronald\truckDriver\src
 set compiled=C:\Users\gtadj\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu18.04LTS_79rhkp1fndgsc\LocalState\rootfs\home\ronald\truckDriver\src\objs\armv7Linux4gcc7.5.0\driveAssembly_subscriber
 
