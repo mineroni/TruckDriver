@@ -1,0 +1,6 @@
+topic leírások jelenlegi- bővítések
+ábra összerakva, kipróbálva
+beaglebone-ról mesélni
+pin kiosztás
+deploy script működése
+beszámolóban lévő kód
