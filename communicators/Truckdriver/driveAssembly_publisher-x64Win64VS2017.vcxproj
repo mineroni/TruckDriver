@@ -121,7 +121,7 @@
       <AdditionalDependencies>nddscppzd.lib;nddsczd.lib;nddscorezd.lib;netapi32.lib;advapi32.lib;user32.lib;WS2_32.lib;;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\objs\x64Win64VS2017\driveAssembly_publisher.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(NDDSHOME)\lib\x64Win64VS2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Windows Kits\10\Lib\10.0.22000.0\um\x64;$(NDDSHOME)\lib\x64Win64VS2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\objs\x64Win64VS2017\driveAssembly_publisher.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -305,6 +305,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="USER_QOS_PROFILES.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\xinput.lib" />
+    <Library Include="..\..\..\..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\Xinput9_1_0.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

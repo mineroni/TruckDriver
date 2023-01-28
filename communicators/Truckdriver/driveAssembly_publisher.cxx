@@ -5,6 +5,12 @@
 #define GOING_SLOW 1
 
 #include <iostream>
+
+
+#include <WinSock2.h>
+#include <windows.h>
+#include <Xinput.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,6 +18,7 @@
 #include "driveAssemblySupport.h"
 #include "ndds/ndds_cpp.h"
 #include "application.h"
+
 
 using namespace application;
 
@@ -119,6 +126,13 @@ int run_code(unsigned int domain_id, unsigned int sample_count)
     // ---------------------
     for (unsigned int count = 0; !shutdown_requested && count < sample_count; ++count)
     {
+        
+        //Getting state from XBOX controller
+        DWORD controllerConnected;
+        XINPUT_STATE controllerState;
+        ZeroMemory(&controllerState, sizeof(XINPUT_STATE));
+        controllerConnected = XInputGetState(0, &controllerState);
+
         bool lamp_toggle = false;
 
         // Set driving variables to zero
@@ -126,22 +140,46 @@ int run_code(unsigned int domain_id, unsigned int sample_count)
         sample->steer = 0;
         sample->horn_voice = 0;
 
-        // Check pressed keys
-        if (GetAsyncKeyState(VK_UP) < 0)
-            sample->drive = getSpeed();
-        else if (GetAsyncKeyState(VK_DOWN) < 0)
-            sample->drive = -getSpeed();
-        if (GetAsyncKeyState(VK_LEFT) < 0)
-            sample->steer = -1;
-        else if (GetAsyncKeyState(VK_RIGHT) < 0)
-            sample->steer = 1;
-        if (GetAsyncKeyState(0x4C)) // L button
+        // Xbox controller connected
+        if (controllerConnected == ERROR_SUCCESS)
         {
-            lamp_toggle = true;
-            lamp_state = lamp_state == 0 ? 1 : 0;
+            // Check for driving data
+            if (controllerState.Gamepad.bRightTrigger != 0 && controllerState.Gamepad.bLeftTrigger == 0)
+                sample->drive = (double)controllerState.Gamepad.bRightTrigger / 255;
+            else if (controllerState.Gamepad.bLeftTrigger != 0 && controllerState.Gamepad.bRightTrigger == 0)
+                sample->drive = -(double)controllerState.Gamepad.bLeftTrigger / 255;
+            if (abs(controllerState.Gamepad.sThumbLX) > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+                sample->steer = (double)controllerState.Gamepad.sThumbLX / 32768;
+
+            if(controllerState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) // Controller right shoulder
+            {
+                lamp_toggle = true;
+                lamp_state = lamp_state + 1;
+                lamp_state = lamp_state > 3 ? 0 : lamp_state;
+            }
+            if (controllerConnected == ERROR_SUCCESS && controllerState.Gamepad.wButtons & XINPUT_GAMEPAD_A) // Controller A
+                sample->horn_voice = 1;
         }
-        if (GetAsyncKeyState(0x48)) // H button
-            sample->horn_voice = 1;
+        if(sample->drive == 0 && sample->steer == 0 && sample->horn_voice == 0 && !lamp_toggle)
+        {
+            // Check pressed keys
+            if (GetAsyncKeyState(VK_UP) < 0)
+                sample->drive = getSpeed();
+            else if (GetAsyncKeyState(VK_DOWN) < 0)
+                sample->drive = -getSpeed();
+            if (GetAsyncKeyState(VK_LEFT) < 0)
+                sample->steer = -1;
+            else if (GetAsyncKeyState(VK_RIGHT) < 0)
+                sample->steer = 1;
+            if (GetAsyncKeyState(0x4C)) // L button
+            {
+                lamp_toggle = true;
+                lamp_state = lamp_state + 1;
+                lamp_state = lamp_state > 3 ? 0 : lamp_state;
+            }
+            if (GetAsyncKeyState(0x48)) // H button
+                sample->horn_voice = 1;
+        }
 
         sample->lamp_mode = lamp_state;
         //If we pressing any of the direction keys
@@ -154,7 +192,7 @@ int run_code(unsigned int domain_id, unsigned int sample_count)
             }
             else
             {
-                std::cout << "Loop counter: " << count << ", Sent command counter: " << message_counter << ", Sent command: " << (sample->drive > 0 ? "Forward, " : (sample->drive < 0 ? "Backward, " : "Stopped, ")) << (sample->steer < 0  ? "Left, " : (sample->steer > 0 ? "Right, " : "Straight, ")) << (sample->lamp_mode == 1 ? "Lamp turned on, " : "Lamp turned off, ") << (sample->horn_voice == 1 ? "Horn turned on" : "Horn turned off") << std::endl;
+                std::cout << "Loop counter: " << count << ", Sent command counter: " << message_counter << ", Sent command: " << (sample->drive > 0 ? "Forward, " : (sample->drive < 0 ? "Backward, " : "Stopped, ")) << (sample->steer < 0  ? "Left, " : (sample->steer > 0 ? "Right, " : "Straight, ")) << (sample->lamp_mode > 0 ? "Lamp turned on, " : "Lamp turned off, ") << (sample->horn_voice == 1 ? "Horn turned on" : "Horn turned off") << std::endl;
                 ++message_counter;
             }
         }

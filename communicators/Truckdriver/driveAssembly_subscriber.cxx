@@ -2,7 +2,6 @@
 
 #define PERIOD_DRIVE 64000
 #define DUTY_FORWARD_MIN 40000 // MIN AT 46000 by default
-#define DUTY_BACKWARD_DRIVE 46000 // ha csak egy db fordulattal mehetünk hátrafelé. Amúgy nem kell TODO
 #define PERIOD_STEER 3000000
 #define DUTY_LEFT_STEER 2600000
 #define DUTY_RIGHT_STEER 1700000 //MAX AT 1500000
@@ -46,13 +45,12 @@ void process_Output()
         if (drive > 0 && drive <= 1)
         {
             pwm_backward << 0;
-            pwm_forward << DUTY_FORWARD_MIN + (PERIOD_DRIVE - DUTY_FORWARD_MIN) * drive;
+            pwm_forward << (int)(DUTY_FORWARD_MIN + (PERIOD_DRIVE - DUTY_FORWARD_MIN) * drive);
         }
         else if (drive < 0 && drive >= -1)
         {
             pwm_forward << 0;
-            //pwm_backward << DUTY_BACKWARD_DRIVE;
-            pwm_backward << DUTY_FORWARD_MIN + (PERIOD_DRIVE - DUTY_FORWARD_MIN) * (-drive);
+            pwm_backward << (int)(DUTY_FORWARD_MIN + (PERIOD_DRIVE - DUTY_FORWARD_MIN) * (-drive));
 
         }
         else
@@ -69,9 +67,9 @@ void process_Output()
         std::fstream fs;
         fs.open("/dev/pwm/ehrpwm0a/duty_cycle");
         if (steer < 0 && steer >= -1)
-            fs << DUTY_LEFT_STEER;
+            fs << (int)(DUTY_STRAIGHT_STEER + (DUTY_LEFT_STEER - DUTY_STRAIGHT_STEER) * abs(steer));
         else if (steer > 0 && steer <= 1)
-            fs << DUTY_RIGHT_STEER;
+            fs << (int)(DUTY_STRAIGHT_STEER + (DUTY_RIGHT_STEER - DUTY_STRAIGHT_STEER) * steer);
         else
             fs << DUTY_STRAIGHT_STEER;
         fs.close();
@@ -79,18 +77,30 @@ void process_Output()
     }
     if (lamp_mode != last_lamp_mode)
     {
-        std::fstream fs;
-        fs.open("/sys/class/gpio/gpio60/value");
+        std::fstream l1, l2;
+        l1.open("/sys/class/gpio/gpio60/value");
+        l2.open("/sys/class/gpio/gpio49/value");
         switch (lamp_mode)
         {
             case(1):
-                fs << 1;
+                l1 << 1;
+                l2 << 0;
+                break;
+            case(2):
+                l1 << 0;
+                l2 << 1;
+                break;
+            case(3):
+                l1 << 1;
+                l2 << 1;
                 break;
             default:
-                fs << 0;
+                l1 << 0;
+                l2 << 0;
                 break;
         }
-        fs.close();
+        l1.close();
+        l2.close();
         last_lamp_mode = lamp_mode;
     }
     if (horn_voice != last_horn_voice)
@@ -373,7 +383,20 @@ static void setup_pins()
     fs.open("/sys/class/gpio/gpio60/enable");
     fs << 1;
     fs.close();
-    //Pin P9_15 -> Horn control pin 1
+    //Pin P9_12 -> Lamp control pin 2
+    fs.open("/sys/class/gpio/gpio49/export");
+    fs << 49;
+    fs.close();
+    fs.open("/sys/class/gpio/gpio49/direction");
+    fs << "out";
+    fs.close();
+    fs.open("/sys/class/gpio/gpio49/value");
+    fs << 0;
+    fs.close();
+    fs.open("/sys/class/gpio/gpio49/enable");
+    fs << 1;
+    fs.close();
+    //Pin P9_15 -> Horn control pin
     fs.open("/sys/class/gpio/gpio48/export");
     fs << 48;
     fs.close();
