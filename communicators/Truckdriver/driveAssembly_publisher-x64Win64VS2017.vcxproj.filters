@@ -27,7 +27,7 @@
     <ClCompile Include="driveAssemblySupport.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>    
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="driveAssembly.h">
       <Filter>Header Files</Filter>
@@ -41,10 +41,14 @@
     <ClInclude Include="application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>  
+  </ItemGroup>
   <ItemGroup>
     <None Include="USER_QOS_PROFILES.xml">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\xinput.lib" />
+    <Library Include="..\..\..\..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64\Xinput9_1_0.lib" />
   </ItemGroup>
 </Project>
