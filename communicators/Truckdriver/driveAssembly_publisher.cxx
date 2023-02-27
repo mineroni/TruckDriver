@@ -121,6 +121,7 @@ int run_code(unsigned int domain_id, unsigned int sample_count)
     }
 
     unsigned int message_counter = 0;
+    bool lamp_pressed = false;
 
     // Main loop, write data
     // ---------------------
@@ -151,7 +152,7 @@ int run_code(unsigned int domain_id, unsigned int sample_count)
             if (abs(controllerState.Gamepad.sThumbLX) > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
                 sample->steer = (double)controllerState.Gamepad.sThumbLX / 32768;
 
-            if(controllerState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) // Controller right shoulder
+            if(controllerState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER && !lamp_pressed) // Controller right shoulder
             {
                 lamp_toggle = true;
                 lamp_state = lamp_state + 1;
@@ -171,7 +172,7 @@ int run_code(unsigned int domain_id, unsigned int sample_count)
                 sample->steer = -1;
             else if (GetAsyncKeyState(VK_RIGHT) < 0)
                 sample->steer = 1;
-            if (GetAsyncKeyState(0x4C)) // L button
+            if (GetAsyncKeyState(0x4C) && !lamp_pressed) // L button
             {
                 lamp_toggle = true;
                 lamp_state = lamp_state + 1;
@@ -180,6 +181,8 @@ int run_code(unsigned int domain_id, unsigned int sample_count)
             if (GetAsyncKeyState(0x48)) // H button
                 sample->horn_voice = 1;
         }
+
+        lamp_pressed = controllerState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER || GetAsyncKeyState(0x4C);
 
         sample->lamp_mode = lamp_state;
         //If we pressing any of the direction keys
